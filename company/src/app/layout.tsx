@@ -1,0 +1,34 @@
+import type { Metadata } from "next";
+import "./globals.css";
+import QueryProvider from "./lib/utils/QueryProvider";
+import Gnb from "./components/Gnb/Gnb";
+import localFont from "next/font/local";
+
+export const metadata: Metadata = {
+  title: "용광산업",
+  description: "용광산업 홈페이지",
+};
+
+const pretendard = localFont({
+  src: "../../static/font/PretendardVariable.woff2",
+  display: "swap",
+  weight: "100 900",
+  variable: "--font-pretendard",
+});
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="kr">
+      <QueryProvider>
+        <body className={`${pretendard.variable} ${pretendard.className}`}>
+          <Gnb />
+          {children}
+        </body>
+      </QueryProvider>
+    </html>
+  );
+}
