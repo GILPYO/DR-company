@@ -4,18 +4,27 @@ import Image from "next/image";
 import { useState } from "react";
 import OpenMenu from "./OpenMenu";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/hooks/Auth/useAuth";
+import useSignOut from "@/app/hooks/Auth/useSignOut";
 
 export default function Gnb() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const { user, isAuthenticated, loading } = useAuth();
+  const { mutate: signOut, isPending: isSigningOut } = useSignOut();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
+  const handleSignOut = () => {
+    signOut();
+  };
+
   return (
     <div className="w-full h-[120px] flex justify-between items-center px-[20px]">
       <div className="w-[118px] flex justify-start">
+        {/* 기존 햄버거 메뉴 */}
         {isOpen ? (
           <div onClick={toggleMenu}>
             <svg
@@ -79,26 +88,43 @@ export default function Gnb() {
           </div>
         )}
       </div>
+
       <div className="flex-1 flex justify-center">
         <Image src={"/logo.png"} alt="Logo" width={68} height={68} />
       </div>
-      <div className="min-w-[94px] h-[19px] flex items-center justify-end gap-[10px]">
-        <button
-          onClick={() => router.push("/Signup")}
-          type="button"
-          className="text-[14px] leading-[12px] text-[#888888]"
-        >
-          회원가입
-        </button>
-        <div className="h-[16px] border border-[#888888]"></div>
-        <button
-          onClick={() => router.push("/Login")}
-          type="button"
-          className="text-[14px] leading-[12px] text-[#888888]"
-        >
-          로그인
-        </button>
+
+      <div className="w-[118px] flex items-center justify-end gap-[10px]">
+        {loading ? (
+          <div className="text-[14px] text-[#888888]">로딩중...</div>
+        ) : isAuthenticated ? (
+          <>
+            <button
+              onClick={handleSignOut}
+              disabled={isSigningOut}
+              className="text-[14px] text-[#888888] hover:text-[#2565ae] disabled:opacity-50"
+            >
+              {isSigningOut ? "..." : "로그아웃"}
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={() => router.push("/Signup")}
+              className="text-[14px] text-[#888888] hover:text-[#2565ae]"
+            >
+              회원가입
+            </button>
+            <div className="h-[16px] border border-[#888888]"></div>
+            <button
+              onClick={() => router.push("/Login")}
+              className="text-[14px] text-[#888888] hover:text-[#2565ae]"
+            >
+              로그인
+            </button>
+          </>
+        )}
       </div>
+
       {isOpen && <OpenMenu toggleMenu={toggleMenu} isOpen={isOpen} />}
     </div>
   );

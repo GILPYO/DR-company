@@ -2,7 +2,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { signInWithEmail } from "@/app/service/Auth/signInWithEmail";
+import { signInWithEmail } from "@/app/service/Auth/SignInWithEmail";
 import Swal from "sweetalert2";
 
 export type SignIn = {
