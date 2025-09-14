@@ -84,7 +84,7 @@ export default function Gnb() {
       </div>
       <div className="min-w-[94px] h-[19px] flex items-center justify-end gap-[10px]">
         <button
-          onClick={() => router.push("/Register")}
+          onClick={() => router.push("/Signup")}
           type="button"
           className="text-[14px] leading-[12px] text-[#888888]"
         >
