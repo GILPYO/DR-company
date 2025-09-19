@@ -1,3 +1,9 @@
+import Main from "./Main/page";
+
 export default function Home() {
-  return <div className="">색상 테스트</div>;
+  return (
+    <div className="">
+      <Main />
+    </div>
+  );
 }
