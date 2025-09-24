@@ -22,7 +22,7 @@ export default function Gnb() {
   };
 
   return (
-    <div className="w-full h-[120px] flex justify-between items-center px-[20px]">
+    <div className="sticky top-0 z-50 w-full h-[120px] flex justify-between items-center px-[20px]">
       <div className="w-[118px] flex justify-start">
         {/* 기존 햄버거 메뉴 */}
         {isOpen ? (
