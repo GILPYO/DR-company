@@ -10,7 +10,7 @@ import useSignOut from "@/app/hooks/Auth/useSignOut";
 export default function Gnb() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const { user, isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
   const { mutate: signOut, isPending: isSigningOut } = useSignOut();
 
   const toggleMenu = () => {
@@ -22,7 +22,7 @@ export default function Gnb() {
   };
 
   return (
-    <div className="sticky top-0 z-50 w-full h-[120px] flex justify-between items-center px-[20px]">
+    <div className="sticky top-0 z-50 w-full h-[120px] flex justify-between items-center px-[20px] bg-[#ffffff]">
       <div className="w-[118px] flex justify-start">
         {/* 기존 햄버거 메뉴 */}
         {isOpen ? (
@@ -89,7 +89,10 @@ export default function Gnb() {
         )}
       </div>
 
-      <div className="flex-1 flex justify-center">
+      <div
+        onClick={() => router.push("/")}
+        className="flex-1 flex justify-center"
+      >
         <Image src={"/logo.png"} alt="Logo" width={68} height={68} />
       </div>
 
