@@ -17,11 +17,11 @@ const useSignUp = () => {
   return useMutation({
     mutationFn: (data: SignUp) => signUpWithEmail(data),
     onSuccess: () => {
-      Swal.fire("회원가입이 완료되었습니다! 이메일을 확인해주세요.");
+      Swal.fire("회원가입이 완료되었습니다!");
       router.push("/");
     },
     onError: (error: any) => {
-      Swal.fire(error.message || "회원가입에 실패했습니다.");
+      Swal.fire("회원가입에 실패했습니다.");
     },
   });
 };

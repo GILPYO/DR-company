@@ -70,6 +70,30 @@ export default function Signup() {
           </p>
         )}
 
+        {/* 이메일 */}
+        <div className="flex items-center">
+          <label className="text-[16px] font-medium text-[#363636] w-[100px]">
+            이름
+          </label>
+          <input
+            {...register("username", {
+              required: "이름을 입력해주세요",
+              pattern: {
+                value: /^[A-Za-z가-힣]{2,10}$/,
+                message: "올바른 이름 형식이 아닙니다",
+              },
+            })}
+            type="text"
+            placeholder="이름 (필수)"
+            className="flex-1 border border-[#ddd] h-[40px] px-[12px] text-[14px] placeholder:text-[#999] focus:outline-none focus:border-[#2565ae]"
+          />
+        </div>
+        {errors.username && (
+          <p className="text-red-500 text-sm ml-[100px]">
+            {errors.username.message}
+          </p>
+        )}
+
         {/* 비밀번호 */}
         <div className="flex items-center">
           <label className="text-[16px] font-medium text-[#363636] w-[100px]">
@@ -124,7 +148,7 @@ export default function Signup() {
               required: "핸드폰 번호를 입력해주세요",
             })}
             type="tel"
-            placeholder="핸드폰 번호"
+            placeholder="핸드폰 번호 (필수)"
             className="flex-1 border border-[#ddd] h-[40px] px-[12px] text-[14px] placeholder:text-[#999] focus:outline-none focus:border-[#2565ae]"
           />
         </div>

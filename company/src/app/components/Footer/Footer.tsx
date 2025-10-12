@@ -17,7 +17,7 @@ export function Footer() {
       </div>
 
       {/* 메뉴 링크 */}
-      <div className="flex justify-center items-center gap-4 mb-8 text-[#333] text-[16px] md:text-[18px]">
+      <div className="flex justify-center items-center gap-4 mb-8 text-[#333] text-[14px] md:text-[18px] whitespace-nowrap">
         <Link href="/introduce" className="hover:text-[#4A7BC0]">
           회사소개
         </Link>

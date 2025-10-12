@@ -9,7 +9,7 @@ export const HOME_CONTENT_LIST = [
     name: "제품소개",
     description: "용광산업의 제품들을\n확인하실 수 있습니다.",
     image: "/aboutUs2.png",
-    href: "/Product",
+    href: "/Products",
   },
   {
     name: "기술현황",
@@ -17,4 +17,11 @@ export const HOME_CONTENT_LIST = [
     image: "/aboutUs3.png",
     href: "/Tech",
   },
+];
+
+export const INTRODUCE_TABS = [
+  { id: "intro", label: "회사소개" },
+  { id: "history", label: "연혁" },
+  { id: "organization", label: "조직도" },
+  { id: "location", label: "오시는길" },
 ];

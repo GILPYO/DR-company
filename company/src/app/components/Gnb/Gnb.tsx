@@ -113,14 +113,14 @@ export default function Gnb() {
           <>
             <button
               onClick={() => router.push("/Signup")}
-              className="text-[14px] text-[#888888] hover:text-[#2565ae]"
+              className="text-[14px] text-[#888888] hover:text-[#2565ae] whitespace-nowrap"
             >
               회원가입
             </button>
             <div className="h-[16px] border border-[#888888]"></div>
             <button
               onClick={() => router.push("/Login")}
-              className="text-[14px] text-[#888888] hover:text-[#2565ae]"
+              className="text-[14px] text-[#888888] hover:text-[#2565ae] whitespace-nowrap"
             >
               로그인
             </button>

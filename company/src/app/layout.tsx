@@ -3,6 +3,7 @@ import "./globals.css";
 import QueryProvider from "./lib/utils/QueryProvider";
 import Gnb from "./components/Gnb/Gnb";
 import localFont from "next/font/local";
+import { Footer } from "./components/Footer/Footer";
 
 export const metadata: Metadata = {
   title: "용광산업",
@@ -25,10 +26,11 @@ export default function RootLayout({
     <html lang="kr">
       <QueryProvider>
         <body
-          className={`${pretendard.variable} ${pretendard.className}flex flex-col items-center justify-center max-w-[768px] mx-auto`}
+          className={`${pretendard.variable} ${pretendard.className} flex flex-col items-center justify-center max-w-[768px] mx-auto`}
         >
           <Gnb />
           {children}
+          <Footer />
         </body>
       </QueryProvider>
     </html>
