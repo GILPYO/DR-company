@@ -1,4 +1,6 @@
 "use client";
+
+import { Suspense } from "react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
@@ -9,7 +11,7 @@ import { CompanyHistory } from "./components/CompanyHistory";
 import { CompanyOrganization } from "./components/CompanyOrganization";
 import { CompanyLocation } from "./components/CompanyLocation";
 
-export default function Introduce() {
+function IntroduceContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tab = searchParams.get("tab") || "intro";
@@ -74,5 +76,19 @@ export default function Introduce() {
       </div>
       <div>{renderContent()}</div>
     </section>
+  );
+}
+
+export default function IntroducePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center min-h-screen">
+          로딩 중...
+        </div>
+      }
+    >
+      <IntroduceContent />
+    </Suspense>
   );
 }

@@ -23,7 +23,7 @@ export default function QnaPage() {
   const POSTS_PER_PAGE = 10;
 
   const { data: questionsData, isLoading } = useGetQuestionsWithPagination(
-    currentPage,
+    currentPage, 
     POSTS_PER_PAGE
   );
 
@@ -122,15 +122,9 @@ export default function QnaPage() {
           <thead className="w-full">
             <tr className="bg-[#2565ae] text-white w-full">
               <th className="py-2 px-2 text-center font-medium w-[10%]">NO</th>
-              <th className="py-2 px-2 text-center font-medium w-[40%]">
-                제목
-              </th>
-              <th className="py-2 px-2 text-center font-medium w-[30%]">
-                날짜
-              </th>
-              <th className="py-2 px-2 text-center font-medium w-[20%]">
-                작성자
-              </th>
+              <th className="py-2 px-2 text-center font-medium w-[40%]">제목</th>
+              <th className="py-2 px-2 text-center font-medium w-[30%]">날짜</th>
+              <th className="py-2 px-2 text-center font-medium w-[20%]">작성자</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -142,10 +136,8 @@ export default function QnaPage() {
               </tr>
             ) : (
               questionsData?.data.map((item: any, index: number) => {
-                const globalIndex =
-                  questionsData.count -
-                  ((currentPage - 1) * POSTS_PER_PAGE + index);
-
+                const globalIndex = questionsData.count - ((currentPage - 1) * POSTS_PER_PAGE + index);
+                
                 return (
                   <tr
                     key={item.id}

@@ -1,4 +1,6 @@
 "use client";
+
+import { Suspense } from "react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
@@ -10,7 +12,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-export default function Page() {
+function ProductsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const category = searchParams.get("category") || "condensing";
@@ -191,5 +193,19 @@ export default function Page() {
         )}
       </div>
     </section>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center min-h-screen">
+          로딩 중...
+        </div>
+      }
+    >
+      <ProductsContent />
+    </Suspense>
   );
 }

@@ -1,5 +1,5 @@
 "use client";
-
+import { Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
@@ -18,7 +18,7 @@ type FormData = {
   img_url?: string[];
 };
 
-export default function NoticeWritePage() {
+function NoticeWriteContent() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
   const [editData, setEditData] = useState<any>(null);
@@ -276,5 +276,19 @@ export default function NoticeWritePage() {
         </div>
       </form>
     </section>
+  );
+}
+
+export default function NoticeWritePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center min-h-screen">
+          로딩 중...
+        </div>
+      }
+    >
+      <NoticeWriteContent />
+    </Suspense>
   );
 }

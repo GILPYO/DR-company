@@ -8,6 +8,7 @@ import useCreateBoard from "@/app/hooks/Board/useCreateBoard";
 import useUpdateBoard from "@/app/hooks/Board/useEditBoard";
 import { NewBoardPost } from "@/app/service/board/CreateBoard";
 import { supabase } from "@/app/lib/supabaseClient";
+import { Suspense } from "react";
 
 type BoardData = {
   title: string;
@@ -16,7 +17,7 @@ type BoardData = {
   img_url?: string[];
 };
 
-export default function WritePage() {
+function TechWriteContent() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
   const [editData, setEditData] = useState<any>(null);
@@ -291,5 +292,19 @@ export default function WritePage() {
         </div>
       </form>
     </section>
+  );
+}
+
+export default function TechWritePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center min-h-screen">
+          로딩 중...
+        </div>
+      }
+    >
+      <TechWriteContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 // Customer/qna/write/page.tsx
 "use client";
-
+import { Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
@@ -19,7 +19,7 @@ type FormData = {
   img_url?: string[];
 };
 
-export default function QnaWritePage() {
+function QnaWriteContent() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
   const [editData, setEditData] = useState<any>(null);
@@ -285,5 +285,19 @@ export default function QnaWritePage() {
         </div>
       </form>
     </section>
+  );
+}
+
+export default function QnaWritePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center min-h-screen">
+          로딩 중...
+        </div>
+      }
+    >
+      <QnaWriteContent />
+    </Suspense>
   );
 }
