@@ -1,22 +1,25 @@
+// Customer/qna/write/page.tsx
 "use client";
 
 import { useForm } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import useCreateBoard from "@/app/hooks/Board/useCreateBoard";
-import useUpdateBoard from "@/app/hooks/Board/useEditBoard";
-import { NewBoardPost } from "@/app/service/board/CreateBoard";
 import { supabase } from "@/app/lib/supabaseClient";
+import { useAuth } from "@/app/hooks/Auth/useAuth";
+import {
+  useCreateQuestion,
+  useUpdateQuestion,
+} from "@/app/hooks/Customer/useQuestion";
+import Swal from "sweetalert2";
 
-type BoardData = {
+type FormData = {
   title: string;
   content: string;
-  aouther?: string;
   img_url?: string[];
 };
 
-export default function WritePage() {
+export default function QnaWritePage() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
   const [editData, setEditData] = useState<any>(null);
@@ -26,38 +29,40 @@ export default function WritePage() {
   const editId = searchParams.get("edit");
   const isEdit = !!editId;
 
-  const { register, handleSubmit, setValue, reset } = useForm<BoardData>();
+  const { register, handleSubmit, setValue, reset } = useForm<FormData>();
   const router = useRouter();
-  const { mutate: createMutate, isPending: isCreating } = useCreateBoard();
-  const { mutate: updateMutate, isPending: isUpdating } = useUpdateBoard();
+  const { user } = useAuth();
+
+  const { mutate: createQuestion, isPending: isCreatingQuestion } =
+    useCreateQuestion();
+  const { mutate: updateQuestion, isPending: isUpdatingQuestion } =
+    useUpdateQuestion();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 🔥 직접 수정 데이터 가져오기
+  // 🔥 수정 모드일 때 데이터 가져오기
   useEffect(() => {
     if (isEdit && editId) {
       const fetchEditData = async () => {
         setIsLoadingEdit(true);
         try {
           const { data, error } = await supabase
-            .from("board")
+            .from("questions")
             .select("*")
             .eq("id", Number(editId))
             .single();
 
-          if (error) {
-            console.error("게시글 불러오기 실패:", error);
-            alert("게시글을 불러올 수 없습니다.");
-            router.push("/Tech");
+          if (error || !data) {
+            Swal.fire("게시글을 찾을 수 없습니다.");
+            router.push("/Customer/qna");
             return;
           }
 
           setEditData(data);
-          console.log("수정 데이터 로드:", data);
         } catch (error) {
           console.error("에러:", error);
-          alert("게시글을 불러올 수 없습니다.");
-          router.push("/Tech");
+          Swal.fire("게시글을 불러올 수 없습니다.");
+          router.push("/Customer/qna");
         } finally {
           setIsLoadingEdit(false);
         }
@@ -67,17 +72,42 @@ export default function WritePage() {
     }
   }, [isEdit, editId, router]);
 
-  // 수정 모드일 때 폼에 데이터 채우기
+  // 폼에 데이터 채우기
   useEffect(() => {
     if (isEdit && editData) {
       reset({
         title: editData.title,
         content: editData.content,
-        aouther: editData.aouther,
         img_url: editData.img_url || [],
       });
     }
   }, [isEdit, editData, reset]);
+
+  // 사용자 인증 및 권한 체크
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        Swal.fire("로그인이 필요합니다.");
+        router.push("/login");
+        return;
+      }
+
+      setCurrentUser(user.id);
+
+      // 🔥 수정 권한 체크 (본인만)
+      if (isEdit && editData && editData.author_id !== user.id) {
+        Swal.fire("작성자만 수정할 수 있습니다.");
+        router.push("/Customer/qna");
+        return;
+      }
+    };
+
+    getCurrentUser();
+  }, [isEdit, editData, router]);
 
   const handleFileButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -94,15 +124,12 @@ export default function WritePage() {
         const uploadedUrls: string[] = [];
 
         for (const file of fileArray) {
-          const fileName = `board-img/${Date.now()}-${file.name}`;
+          const fileName = `qna-img/${Date.now()}-${file.name}`;
           const { data, error } = await supabase.storage
             .from("manager-bucket")
             .upload(fileName, file);
 
-          if (error) {
-            console.error("업로드 에러:", error);
-            throw error;
-          }
+          if (error) throw error;
 
           const {
             data: { publicUrl },
@@ -112,71 +139,38 @@ export default function WritePage() {
         }
 
         setValue("img_url", uploadedUrls);
-        console.log("업로드 성공:", uploadedUrls);
       } catch (error) {
         console.error("파일 업로드 실패:", error);
-        alert("파일 업로드에 실패했습니다. 다시 시도해주세요.");
-
-        const fileNames = fileArray.map((file) => file.name);
-        setValue("img_url", fileNames);
+        Swal.fire("파일 업로드에 실패했습니다.");
       }
     }
   };
 
-  useEffect(() => {
-    const getCurrentUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) {
-        setCurrentUser(user.id);
-        setValue("aouther", user.id);
-        console.log("현재 사용자:", user);
+  const onSubmit = (data: FormData) => {
+    if (!currentUser) return;
 
-        // 🔥 수정 모드일 때 권한 체크 (데이터가 로드된 후에만)
-        if (isEdit && editData) {
-          if (editData.aouther !== user.id) {
-            alert("작성자만 수정할 수 있습니다.");
-            router.push("/Tech");
-            return;
-          }
-        }
-      } else {
-        router.push("/login");
-      }
-    };
-    getCurrentUser();
-  }, [setValue, router, isEdit, editData]);
-
-  const onSubmit = (data: BoardData) => {
-    console.log("폼 데이터:", data);
-    console.log("수정 모드:", isEdit);
-
-    if (currentUser) {
-      if (isEdit) {
-        // 수정 로직
-        updateMutate({
-          id: Number(editId),
-          title: data.title,
-          content: data.content,
-          img_url: data.img_url || [],
-        });
-      } else {
-        // 새 글 작성 로직
-        const submitData: NewBoardPost = {
-          title: data.title,
-          content: data.content,
-          aouther: currentUser,
-          img_url: data.img_url || [],
-        };
-        createMutate(submitData);
-      }
+    if (isEdit) {
+      // 수정 로직
+      updateQuestion({
+        id: Number(editId),
+        title: data.title,
+        content: data.content,
+        img_url: data.img_url || [],
+      });
+    } else {
+      // 새 글 작성 로직
+      createQuestion({
+        title: data.title,
+        content: data.content,
+        author_id: currentUser,
+        img_url: data.img_url || [],
+      });
     }
   };
 
-  const isPending = isCreating || isUpdating;
+  const isPending = isCreatingQuestion || isUpdatingQuestion;
 
-  // 🔥 로딩 조건 수정
+  // 로딩 상태
   if (!currentUser) {
     return (
       <section className="w-full h-auto flex flex-col justify-center items-center mb-[20px]">
@@ -185,7 +179,6 @@ export default function WritePage() {
     );
   }
 
-  // 🔥 수정 모드에서 데이터 로딩 중일 때
   if (isEdit && isLoadingEdit) {
     return (
       <section className="w-full h-auto flex flex-col justify-center items-center mb-[20px]">
@@ -194,13 +187,12 @@ export default function WritePage() {
     );
   }
 
-  // 🔥 수정 모드인데 데이터가 없을 때
   if (isEdit && !isLoadingEdit && !editData) {
     return (
       <section className="w-full h-auto flex flex-col justify-center items-center mb-[20px]">
         <p className="text-red-500">게시글을 찾을 수 없습니다.</p>
         <button
-          onClick={() => router.push("/Tech")}
+          onClick={() => router.push("/Customer/qna")}
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
         >
           목록으로 돌아가기
@@ -213,13 +205,13 @@ export default function WritePage() {
     <section className="w-full h-auto flex flex-col justify-center items-center mb-[20px]">
       <div className="relative w-full h-[200px] md:h-[250px] flex items-center justify-center">
         <Image
-          src={"/TechBanner.png"}
-          alt="Products"
+          src={"/CustomerBanner.png"}
+          alt="Customer Service"
           fill
           className="object-cover"
         />
         <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-[24px] md:text-[30px] font-[600]">
-          {isEdit ? "게시글 수정" : "기술현황"}
+          {isEdit ? "질의응답 수정" : "질의응답 작성"}
         </p>
       </div>
 
@@ -233,11 +225,13 @@ export default function WritePage() {
           placeholder="제목을 입력하세요"
           {...register("title", { required: "제목을 입력해주세요" })}
         />
+
         <textarea
           className="w-full h-[440px] border border-gray-300 rounded-md p-2"
           placeholder="내용을 입력하세요"
           {...register("content", { required: "내용을 입력해주세요" })}
         />
+
         <div className="w-full flex items-center justify-center mt-2">
           <button
             onClick={handleFileButtonClick}
@@ -270,7 +264,7 @@ export default function WritePage() {
         <div className="w-full flex gap-4 mt-6">
           <button
             type="button"
-            onClick={() => router.back()}
+            onClick={() => router.push("/Customer/qna")}
             className="flex-1 py-3 px-6 border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition-colors"
           >
             취소

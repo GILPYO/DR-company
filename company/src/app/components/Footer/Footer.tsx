@@ -18,15 +18,15 @@ export function Footer() {
 
       {/* 메뉴 링크 */}
       <div className="flex justify-center items-center gap-4 mb-8 text-[#333] text-[14px] md:text-[18px] whitespace-nowrap">
-        <Link href="/introduce" className="hover:text-[#4A7BC0]">
+        <Link href="/Introduce" className="hover:text-[#4A7BC0]">
           회사소개
         </Link>
         <span className="text-gray-400">|</span>
-        <Link href="/privacy" className="hover:text-[#4A7BC0]">
+        <Link href="" className="hover:text-[#4A7BC0]">
           개인정보처리방침
         </Link>
         <span className="text-gray-400">|</span>
-        <Link href="/terms" className="hover:text-[#4A7BC0]">
+        <Link href="" className="hover:text-[#4A7BC0]">
           서비스 이용약관
         </Link>
       </div>

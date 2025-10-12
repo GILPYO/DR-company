@@ -58,7 +58,7 @@ export const useCreateNotice = () => {
         icon: "success",
         confirmButtonText: "확인",
       }).then(() => {
-        router.push(`/customer/notice/${data.id}`);
+        router.push(`/Customer/notice/${data.id}`);
       });
     },
     onError: (error) => {
@@ -89,7 +89,7 @@ export const useUpdateNotice = () => {
         icon: "success",
         confirmButtonText: "확인",
       }).then(() => {
-        router.push(`/customer/notice/${data.id}`);
+        router.push(`/Customer/notice/${data.id}`);
       });
     },
     onError: (error) => {
@@ -119,7 +119,7 @@ export const useDeleteNotice = () => {
         icon: "success",
         confirmButtonText: "확인",
       }).then(() => {
-        router.push("/customer/notice");
+        router.push("/Customer/notice");
       });
     },
     onError: (error) => {

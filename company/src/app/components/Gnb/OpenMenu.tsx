@@ -115,8 +115,8 @@ const MENU_VALUE = [
   {
     title: "고객센터",
     value: [
-      { name: "고객센터", url: "/Customer" },
-      { name: "질의응답", url: "/Customer" },
+      { name: "고객센터", url: "/Customer/notice" },
+      { name: "질의응답", url: "/Customer/qna" },
     ],
   },
 ];

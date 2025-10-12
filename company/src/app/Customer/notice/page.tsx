@@ -1,68 +1,66 @@
-// tech/page.tsx
 "use client";
 
-import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { formatToKoreanDate } from "../utils/CalculateTime";
-import UserNameDisplay from "../components/UserNameDisplay";
-import Pagination from "../components/Pagination";
-import { useAuth } from "../hooks/Auth/useAuth";
-import {
-  getBoardsWithPagination,
-  PaginatedBoards,
-} from "../service/board/GetBoard";
-import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { formatToKoreanDate } from "../../utils/CalculateTime";
+import Pagination from "../../components/Pagination";
+import { useAuth } from "../../hooks/Auth/useAuth";
+import { useGetNoticesWithPagination } from "../../hooks/Customer/useNotice";
 import Swal from "sweetalert2";
 
-export default function Page() {
+const CUSTOMER_TABS = [
+  { id: "notice", label: "공지사항", href: "/Customer/notice" },
+  { id: "qna", label: "질의응답", href: "/Customer/qna" },
+] as const;
+
+export default function NoticePage() {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
-  const { user, isAdmin } = useAuth();
-  const POSTS_PER_PAGE = 10; // 페이지당 게시물 수
+  const { user, isAdmin } = useAuth(); // 🔥 Tech와 정확히 동일
+  const POSTS_PER_PAGE = 10;
 
-  const {
-    data: boardsData,
-    isLoading,
-    error,
-  } = useQuery<PaginatedBoards>({
-    queryKey: ["boards", currentPage],
-    queryFn: () => getBoardsWithPagination(currentPage, POSTS_PER_PAGE),
-    staleTime: 5 * 60 * 1000, // 5분
-  });
+  const { data: noticesData, isLoading } = useGetNoticesWithPagination(
+    currentPage,
+    POSTS_PER_PAGE
+  );
 
   const handleWrite = async () => {
+    // 🔥 Tech와 정확히 동일한 로직
     if (!user) {
       Swal.fire("로그인이 필요한 서비스입니다.");
-      router.push("/login");
       return;
     }
 
     if (!isAdmin) {
-      Swal.fire("관리자만 글 작성이 가능합니다.");
+      Swal.fire("관리자만 공지사항을 작성할 수 있습니다.");
       return;
     }
 
-    router.push("/Tech/write");
+    router.push("/Customer/notice/write");
   };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // 페이지 변경 시 맨 위로
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleRowClick = (id: number) => {
+    router.push(`/Customer/notice/${id}`);
   };
 
   if (isLoading) {
     return (
-      <section className="w-full h-auto flex flex-col justify-center items-center mb-[20px]">
-        <div className="relative w-full h-[200px] md:h-[250px] flex items-center justify-center">
+      <section className="w-full h-auto flex flex-col justify-center items-center">
+        <div className="relative w-full h-[250px] flex items-center justify-center">
           <Image
-            src={"/techBanner.png"}
-            alt="Products"
+            src={"/CustomerBanner.png"}
+            alt="Customer Service"
             fill
             className="object-cover"
           />
           <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-[24px] md:text-[30px] font-[600]">
-            기술현황
+            고객센터
           </p>
         </div>
         <div className="flex items-center justify-center py-20">
@@ -72,43 +70,49 @@ export default function Page() {
     );
   }
 
-  if (error) {
-    return (
-      <section className="w-full h-auto flex flex-col justify-center items-center mb-[20px]">
-        <div className="flex items-center justify-center py-20">
-          <p className="text-red-500">데이터를 불러올 수 없습니다.</p>
-        </div>
-      </section>
-    );
-  }
-
   return (
-    <section className="w-full h-auto flex flex-col justify-center items-center mb-[20px]">
+    <section className="w-full h-auto flex flex-col justify-center items-center">
+      {/* 헤더 이미지 */}
       <div className="relative w-full h-[200px] md:h-[250px] flex items-center justify-center">
         <Image
-          src={"/techBanner.png"}
-          alt="Products"
+          src={"/CustomerBanner.png"}
+          alt="Customer Service"
           fill
           className="object-cover"
         />
         <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-[24px] md:text-[30px] font-[600]">
-          기술현황
+          고객센터
         </p>
       </div>
 
-      <div className="w-full border-b overflow-x-auto">
+      {/* 메인 카테고리 탭 */}
+      <div className="w-full h-[50px] border-b overflow-x-auto">
         <div className="flex justify-center items-center gap-[16px] md:gap-[24px] min-w-max px-4">
-          <button className="text-[14px] text-[#2565ae] md:text-[16px] py-[10px] px-[8px] font-bold transition-colors relative whitespace-nowrap">
-            인증서
-          </button>
+          {CUSTOMER_TABS.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => router.push(item.href)}
+              className={`text-[14px] md:text-[16px] py-[10px] px-[8px] font-bold transition-colors relative whitespace-nowrap ${
+                item.id === "notice"
+                  ? "text-[#2565ae]"
+                  : "text-[#666] hover:text-[#333]"
+              }`}
+            >
+              {item.label}
+              {item.id === "notice" && (
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#2565ae]" />
+              )}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* 🔥 총 게시물 수와 글쓰기 버튼 */}
+      {/* 총 게시물 수와 글쓰기 버튼 */}
       <div className="w-full flex justify-between items-center px-[20px] mt-[20px]">
         <p className="text-sm text-gray-600">
-          총 {boardsData?.count || 0}개의 게시물
+          총 {noticesData?.count || 0}개의 게시물
         </p>
+        {/* 🔥 Tech와 동일 - 항상 버튼 표시, 클릭할 때 권한 체크 */}
         <button
           onClick={handleWrite}
           className="py-[10px] px-[14px] text-[14px] font-bold bg-[#2565ae] text-white rounded-md hover:bg-[#1b4a86] transition-colors whitespace-nowrap"
@@ -117,41 +121,38 @@ export default function Page() {
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md overflow-hidden w-full px-[12px] mt-[15px]">
+      {/* 게시판 테이블 */}
+      <div className="bg-white rounded-lg shadow-md overflow-hidden w-full px-[12px] mt-[15px] mb-[20px]">
         <table className="w-full">
           <thead className="w-full">
             <tr className="bg-[#2565ae] text-white w-full">
               <th className="py-2 px-2 text-center font-medium w-[10%]">NO</th>
-              <th className="py-2 px-2 text-center font-medium w-[40%]">
+              <th className="py-2 px-2 text-center font-medium w-[50%]">
                 제목
               </th>
-              <th className="py-2 px-2 text-center font-medium w-[30%]">
+              <th className="py-2 px-2 text-center font-medium w-[40%]">
                 날짜
-              </th>
-              <th className="py-2 px-2 text-center font-medium w-[20%]">
-                작성자
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {boardsData?.data.length === 0 ? (
+            {noticesData?.data.length === 0 ? (
               <tr>
-                <td colSpan={4} className="py-8 text-center text-gray-500">
+                <td colSpan={3} className="py-8 text-center text-gray-500">
                   게시물이 없습니다.
                 </td>
               </tr>
             ) : (
-              boardsData?.data.map((item, index) => {
-                // 🔥 전체 번호 계산 (최신 글이 가장 큰 번호)
+              noticesData?.data.map((item: any, index: number) => {
                 const globalIndex =
-                  boardsData.count -
+                  noticesData.count -
                   ((currentPage - 1) * POSTS_PER_PAGE + index);
 
                 return (
                   <tr
                     key={item.id}
                     className="hover:bg-gray-100 cursor-pointer"
-                    onClick={() => router.push(`/Tech/${item.id}`)}
+                    onClick={() => handleRowClick(item.id)}
                   >
                     <td className="py-2 px-2 text-center">{globalIndex}</td>
                     <td className="py-2 px-2 text-center">
@@ -167,11 +168,6 @@ export default function Page() {
                         {formatToKoreanDate(item.created_at)}
                       </div>
                     </td>
-                    <td className="py-2 px-2 text-center">
-                      <div className="truncate max-w-[80px] mx-auto">
-                        <UserNameDisplay userId={item.aouther} />
-                      </div>
-                    </td>
                   </tr>
                 );
               })
@@ -180,11 +176,11 @@ export default function Page() {
         </table>
       </div>
 
-      {/* 🔥 페이지네이션 추가 */}
-      {boardsData && boardsData.totalPages > 1 && (
+      {/* 페이지네이션 */}
+      {noticesData && noticesData.totalPages > 1 && (
         <Pagination
           currentPage={currentPage}
-          totalPages={boardsData.totalPages}
+          totalPages={noticesData.totalPages}
           onPageChange={handlePageChange}
         />
       )}

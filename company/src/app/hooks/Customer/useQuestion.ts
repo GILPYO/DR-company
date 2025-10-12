@@ -60,7 +60,7 @@ export const useCreateQuestion = () => {
         icon: "success",
         confirmButtonText: "확인",
       }).then(() => {
-        router.push(`/customer/questions/${data.id}`);
+        router.push(`/Customer/questions/${data.id}`);
       });
     },
     onError: (error) => {
@@ -91,7 +91,7 @@ export const useUpdateQuestion = () => {
         icon: "success",
         confirmButtonText: "확인",
       }).then(() => {
-        router.push(`/customer/questions/${data.id}`);
+        router.push(`/Customer/questions/${data.id}`);
       });
     },
     onError: (error) => {
@@ -121,7 +121,7 @@ export const useDeleteQuestion = () => {
         icon: "success",
         confirmButtonText: "확인",
       }).then(() => {
-        router.push("/customer/questions");
+        router.push("/Customer/questions");
       });
     },
     onError: (error) => {

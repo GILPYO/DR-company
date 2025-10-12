@@ -1,9 +1,12 @@
+"use client";
 import { HOME_CONTENT_LIST } from "@/constants/constant";
 import Image from "next/image";
 import Link from "next/link";
 import { Footer } from "../components/Footer/Footer";
+import { useRouter } from "next/navigation";
 
 export default function Main() {
+  const router = useRouter();
   return (
     <section className="w-full min-h-[calc(100vh-120px)] flex flex-col items-center justify-start">
       <div className="relative w-full h-[552px]">
@@ -91,7 +94,10 @@ export default function Main() {
         {/* 아이콘 섹션 */}
         <div className="grid grid-cols-3 gap-8 max-w-4xl mx-auto">
           {/* 공지사항 */}
-          <div className="flex flex-col items-center">
+          <div
+            onClick={() => router.push("/Customer/notice")}
+            className="flex flex-col items-center"
+          >
             <div className="flex items-center justify-center w-20 h-20 mb-4">
               <svg
                 width="66"
@@ -147,7 +153,10 @@ export default function Main() {
           </div>
 
           {/* 문의사항 */}
-          <div className="flex flex-col items-center">
+          <div
+            onClick={() => router.push("/Customer/qna")}
+            className="flex flex-col items-center"
+          >
             <div className="flex items-center justify-center w-20 h-20 mb-4">
               <svg
                 width="63"
@@ -196,7 +205,10 @@ export default function Main() {
           </div>
 
           {/* 오시는 길 */}
-          <div className="flex flex-col items-center">
+          <div
+            onClick={() => router.push("/Introduce?tab=location")}
+            className="flex flex-col items-center"
+          >
             <div className="flex items-center justify-center w-20 h-20 mb-4">
               <svg
                 width="64"
