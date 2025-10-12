@@ -93,7 +93,7 @@ export default function Gnb() {
         onClick={() => router.push("/")}
         className="flex-1 flex justify-center"
       >
-        <Image src={"/logo.png"} alt="Logo" width={68} height={68} />
+        <Image src={"/Logo.png"} alt="Logo" width={68} height={68} />
       </div>
 
       <div className="w-[118px] flex items-center justify-end gap-[10px]">

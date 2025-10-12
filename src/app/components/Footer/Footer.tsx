@@ -8,7 +8,7 @@ export function Footer() {
       {/* 로고 */}
       <div className="flex justify-center mb-8">
         <Image
-          src="/logo.png" // 로고 경로
+          src="/Logo.png" // 로고 경로
           alt="용광산업 로고"
           width={120}
           height={80}
