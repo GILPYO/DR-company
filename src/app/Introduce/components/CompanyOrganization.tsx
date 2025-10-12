@@ -18,7 +18,7 @@ export function CompanyOrganization() {
 
         {/* 전무이사 */}
         <div className="relative mt-12">
-          <div className="bg-white border-2 border-yellow-400 rounded-lg px-8 py-4 text-center shadow-md w-60">
+          <div className="bg-white border-2 border-[#ffa517] rounded-lg px-8 py-4 text-center shadow-md w-60">
             <h3 className="text-lg font-bold text-gray-800 mb-1">전무이사</h3>
             <p className="text-sm text-gray-600">Executive Vice President</p>
           </div>
