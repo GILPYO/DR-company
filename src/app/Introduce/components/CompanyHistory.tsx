@@ -32,7 +32,7 @@ export function CompanyHistory() {
           <div className="w-[120px] h-[120px] border-2 border-dashed border-[#2565AE] rounded-full flex items-center justify-center bg-white">
             <div className="w-[80px] h-[80px] flex items-center justify-center">
               <Image
-                src={"/logo.png"}
+                src={"/Logo.png"}
                 alt="logo"
                 width={103.41}
                 height={103.41}
