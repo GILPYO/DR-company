@@ -28,22 +28,22 @@ export const PRODUCT_CATEGORIES: ProductCategories = {
     subcategories: {
       basicWindPressure: {
         id: "basicWindPressure",
-        name: "기본/풍압대",
+        name: "콘덴싱 기본",
         image: "/products/condensing.png",
       },
       separateType: {
         id: "separateType",
-        name: "분리형",
+        name: "콘덴싱 분리형",
         image: "/products/condensing2.png",
       },
       windPressureUse: {
         id: "windPressureUse",
-        name: "풍압사용",
+        name: "콘덴싱 풍압사용",
         image: "/products/condensing3.png",
       },
       windPressureUseSeparate: {
         id: "windPressureUseSeparate",
-        name: "풍압사용 분리형",
+        name: "콘뎅싱 풍압사용 분리형",
         image: "/products/condensing4.png",
       },
       condensingWindBasicPressure: {
@@ -59,7 +59,7 @@ export const PRODUCT_CATEGORIES: ProductCategories = {
     subcategories: {
       basicWindPressure: {
         id: "basicWindPressure",
-        name: "일반 기본/풍압대",
+        name: "일반 기본",
         image: "/products/general.png",
       },
       separateType: {
