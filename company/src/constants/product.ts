@@ -28,27 +28,27 @@ export const PRODUCT_CATEGORIES: ProductCategories = {
     subcategories: {
       basicWindPressure: {
         id: "basicWindPressure",
-        name: "콘덴싱 기본",
+        name: "기본",
         image: "/products/condensing.png",
       },
       separateType: {
         id: "separateType",
-        name: "콘덴싱 분리형",
+        name: "분리형",
         image: "/products/condensing2.png",
       },
       windPressureUse: {
         id: "windPressureUse",
-        name: "콘덴싱 풍압사용",
+        name: "풍압사용",
         image: "/products/condensing3.png",
       },
       windPressureUseSeparate: {
         id: "windPressureUseSeparate",
-        name: "콘뎅싱 풍압사용 분리형",
+        name: "풍압사용 분리형",
         image: "/products/condensing4.png",
       },
       condensingWindBasicPressure: {
         id: "condensingWindBasicPressure",
-        name: "콘덴싱 풍압대",
+        name: "풍압대",
         image: "/products/condensing5.png",
       },
     },
@@ -59,27 +59,27 @@ export const PRODUCT_CATEGORIES: ProductCategories = {
     subcategories: {
       basicWindPressure: {
         id: "basicWindPressure",
-        name: "일반 기본",
+        name: "기본",
         image: "/products/general.png",
       },
       separateType: {
         id: "separateType",
-        name: "일반 분리형",
+        name: "분리형",
         image: "/products/general2.png",
       },
       windPressureUse: {
         id: "windPressureUse",
-        name: "일반 풍압사용",
+        name: "풍압사용",
         image: "/products/general3.png",
       },
       windPressureUseSeparate: {
         id: "windPressureUseSeparate",
-        name: "일반 풍압사용 분리형",
+        name: "풍압사용 분리형",
         image: "/products/general4.png",
       },
       generalBasicWindPressure: {
         id: "generalBasicWindPressure",
-        name: "일반 풍압대",
+        name: "풍압대",
         image: "/products/general5.png",
       },
     },
