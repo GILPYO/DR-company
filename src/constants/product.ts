@@ -28,7 +28,7 @@ export const PRODUCT_CATEGORIES: ProductCategories = {
     subcategories: {
       basicWindPressure: {
         id: "basicWindPressure",
-        name: "기본/풍압대",
+        name: "기본",
         image: "/products/condensing.png",
       },
       separateType: {
@@ -48,7 +48,7 @@ export const PRODUCT_CATEGORIES: ProductCategories = {
       },
       condensingWindBasicPressure: {
         id: "condensingWindBasicPressure",
-        name: "콘덴싱 풍압대",
+        name: "풍압대",
         image: "/products/condensing5.png",
       },
     },
@@ -59,27 +59,27 @@ export const PRODUCT_CATEGORIES: ProductCategories = {
     subcategories: {
       basicWindPressure: {
         id: "basicWindPressure",
-        name: "일반 기본/풍압대",
+        name: "기본",
         image: "/products/general.png",
       },
       separateType: {
         id: "separateType",
-        name: "일반 분리형",
+        name: "분리형",
         image: "/products/general2.png",
       },
       windPressureUse: {
         id: "windPressureUse",
-        name: "일반 풍압사용",
+        name: "풍압사용",
         image: "/products/general3.png",
       },
       windPressureUseSeparate: {
         id: "windPressureUseSeparate",
-        name: "일반 풍압사용 분리형",
+        name: "풍압사용 분리형",
         image: "/products/general4.png",
       },
       generalBasicWindPressure: {
         id: "generalBasicWindPressure",
-        name: "일반 풍압대",
+        name: "풍압대",
         image: "/products/general5.png",
       },
     },
@@ -91,12 +91,62 @@ export const PRODUCT_CATEGORIES: ProductCategories = {
       extension: {
         id: "extension",
         name: "연장관",
-        image: "/products/parts1.png",
+        imageDetails: [
+          {
+            src: "/products/extend700.png",
+            name: "주름 연장관700L",
+          },
+          {
+            src: "/products/extend2000.png",
+            name: "연장관 150~2000L",
+          },
+        ],
       },
       curved: {
         id: "curved",
         name: "곡관",
-        image: "/products/curve.png",
+        imageDetails: [
+          {
+            src: "/products/curve.png",
+            name: "투엘보",
+          },
+          {
+            src: "/products/curve45.png",
+            name: "45° 곡관 200L(공용)",
+          },
+          {
+            src: "/products/curveU.png",
+            name: "U 곡관(공용)",
+          },
+          {
+            src: "/products/curve130.png",
+            name: "130*130 곡관(공용)",
+          },
+          {
+            src: "/products/curve180.png",
+            name: "180*180 기본 곡관(공용)",
+          },
+          {
+            src: "/products/curve250.png",
+            name: "250*250 이중 곡관(공용)",
+          },
+          {
+            src: "/products/curveGeneral.png",
+            name: "일반 기능 곡관",
+          },
+          {
+            src: "/products/curveCondensing.png",
+            name: "콘덴싱 기능 곡관",
+          },
+          {
+            src: "/products/curveS.png",
+            name: "일반 S 곡관",
+          },
+          {
+            src: "/products/curveCondensingS.png",
+            name: "콘덴싱 S 곡관",
+          },
+        ],
       },
       accessories: {
         id: "accessories",
@@ -163,7 +213,12 @@ export const PRODUCT_CATEGORIES: ProductCategories = {
       cascade: {
         id: "cascade",
         name: "캐스케이드",
-        image: "/products/etc.png",
+        imageDetails: [
+          {
+            src: "/products/cascade1.png",
+            name: "배기구",
+          },
+        ],
       },
     },
   },

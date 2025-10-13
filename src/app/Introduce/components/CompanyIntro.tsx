@@ -38,7 +38,7 @@ export function CompanyIntro() {
       {/* 회사명 */}
       <div className="mt-10 text-left">
         <p className="text-[15px] font-bold text-gray-900">
-          (주)용광산업 대표이사 &nbsp;&nbsp;여 광 규
+          (주)용광산업 대표이사 &nbsp;&nbsp;여 광 구
         </p>
       </div>
 
