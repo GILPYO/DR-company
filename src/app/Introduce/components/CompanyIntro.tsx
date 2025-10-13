@@ -43,7 +43,7 @@ export function CompanyIntro() {
       </div>
 
       {/* 구분선 */}
-      <div className="w-full bg-gray-300 mt-12"></div>
+      <div className="w-full h-[1px] bg-gray-300 mt-12"></div>
     </div>
   );
 }
