@@ -308,3 +308,5 @@ export default function TechWritePage() {
     </Suspense>
   );
 }
+
+//최신화용 주석 추가
