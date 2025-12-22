@@ -172,7 +172,7 @@ export default function Signup() {
 
       <div className="mt-[30px]">
         <button
-          onClick={() => router.push("/login")}
+          onClick={() => router.push("/Login")}
           className="text-[#2565ae] text-[14px] hover:underline"
         >
           이미 계정이 있으신가요? 로그인하기

@@ -43,10 +43,10 @@ function IntroduceContent() {
   };
 
   return (
-    <section className="w-full h-auto flex flex-col justify-center items-center">
+    <section className="w-full h-auto flex flex-col justify-center items-center ">
       <div className="relative w-full h-[250px] flex items-center justify-center">
         <Image
-          src={"/Introduce.png"}
+          src={"/Introduceimage.jpg"}
           alt="Introduce"
           fill
           className="object-cover"

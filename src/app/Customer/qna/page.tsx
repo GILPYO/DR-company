@@ -23,7 +23,7 @@ export default function QnaPage() {
   const POSTS_PER_PAGE = 10;
 
   const { data: questionsData, isLoading } = useGetQuestionsWithPagination(
-    currentPage, 
+    currentPage,
     POSTS_PER_PAGE
   );
 
@@ -50,12 +50,12 @@ export default function QnaPage() {
       <section className="w-full h-auto flex flex-col justify-center items-center">
         <div className="relative w-full h-[250px] flex items-center justify-center">
           <Image
-            src={"/CustomerBanner.png"}
+            src={"/CustomerPc.jpg"}
             alt="Customer Service"
             fill
             className="object-cover"
           />
-          <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-[24px] md:text-[30px] font-[600]">
+          <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-[24px] md:text-[30px] font-[600] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
             고객센터
           </p>
         </div>
@@ -71,12 +71,12 @@ export default function QnaPage() {
       {/* 헤더 이미지 */}
       <div className="relative w-full h-[200px] md:h-[250px] flex items-center justify-center">
         <Image
-          src={"/CustomerBanner.png"}
+          src={"/CustomerPc.jpg"}
           alt="Customer Service"
           fill
           className="object-cover"
         />
-        <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-[24px] md:text-[30px] font-[600]">
+        <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-[24px] md:text-[30px] font-[600] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
           고객센터
         </p>
       </div>
@@ -104,7 +104,7 @@ export default function QnaPage() {
       </div>
 
       {/* 총 게시물 수와 글쓰기 버튼 */}
-      <div className="w-full flex justify-between items-center px-[20px] mt-[20px]">
+      <div className="w-full flex justify-between items-center px-[20px] mt-[20px] max-w-[1280px]">
         <p className="text-sm text-gray-600">
           총 {questionsData?.count || 0}개의 게시물
         </p>
@@ -117,14 +117,20 @@ export default function QnaPage() {
       </div>
 
       {/* 게시판 테이블 */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden w-full px-[12px] mt-[15px] mb-[20px]">
+      <div className="bg-white rounded-lg shadow-md overflow-hidden w-full px-[12px] mt-[15px] mb-[20px] max-w-[1280px]">
         <table className="w-full">
           <thead className="w-full">
             <tr className="bg-[#2565ae] text-white w-full">
               <th className="py-2 px-2 text-center font-medium w-[10%]">NO</th>
-              <th className="py-2 px-2 text-center font-medium w-[40%]">제목</th>
-              <th className="py-2 px-2 text-center font-medium w-[30%]">날짜</th>
-              <th className="py-2 px-2 text-center font-medium w-[20%]">작성자</th>
+              <th className="py-2 px-2 text-center font-medium w-[40%]">
+                제목
+              </th>
+              <th className="py-2 px-2 text-center font-medium w-[30%]">
+                날짜
+              </th>
+              <th className="py-2 px-2 text-center font-medium w-[20%]">
+                작성자
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -136,8 +142,10 @@ export default function QnaPage() {
               </tr>
             ) : (
               questionsData?.data.map((item: any, index: number) => {
-                const globalIndex = questionsData.count - ((currentPage - 1) * POSTS_PER_PAGE + index);
-                
+                const globalIndex =
+                  questionsData.count -
+                  ((currentPage - 1) * POSTS_PER_PAGE + index);
+
                 return (
                   <tr
                     key={item.id}

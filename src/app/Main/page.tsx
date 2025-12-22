@@ -3,6 +3,7 @@ import { HOME_CONTENT_LIST } from "@/constants/constant";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { cn } from "@/app/lib/utils";
 
 export default function Main() {
   const router = useRouter();
@@ -44,41 +45,85 @@ export default function Main() {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-4 w-full mt-[40px] px-[20px]">
-        {HOME_CONTENT_LIST.map((item, idx) => (
-          <Link href={item.href} key={idx} className="block">
-            <div className="relative w-full h-[240px] overflow-hidden rounded-2xl transition-transform duration-300 ease-in-out hover:scale-105">
-              <Image
-                src={item.image}
-                alt={item.name}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 680px"
-              />
-              {/* 그라데이션 & 텍스트 */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent " />
-              <div className="absolute left-4 bottom-4 right-4 text-white">
-                <div className="flex items-center justify-between">
-                  <div className="text-lg font-semibold">{item.name}</div>
-                  <div className="w-[30px]">
-                    <svg
-                      width="31"
-                      height="7"
-                      viewBox="0 0 31 7"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M26.2162 1L30 6H0" stroke="white" />
-                    </svg>
+
+      {/* ABOUT US 섹션 */}
+      <div
+        className={cn(
+          "w-full mt-[40px] px-[20px]",
+          "pc:mt-[80px] pc:px-[60px]"
+        )}
+      >
+        {/* ABOUT US 제목 (PC만) */}
+        <h2
+          className={cn(
+            "hidden",
+            "pc:block pc:text-center pc:font-bold pc:mb-[60px] pc:text-[48px]"
+          )}
+        >
+          ABOUT US
+        </h2>
+
+        <div
+          className={cn(
+            "grid gap-4 w-full",
+            "grid-cols-1",
+            "pc:grid pc:grid-cols-3 pc:gap-8 pc:justify-items-center"
+          )}
+        >
+          {HOME_CONTENT_LIST.map((item, idx) => (
+            <Link href={item.href} key={idx} className="block">
+              <div
+                className={cn(
+                  "relative overflow-hidden rounded-2xl transition-transform duration-300 ease-in-out hover:scale-105",
+                  "w-full h-[240px]",
+                  "pc:w-[400px] pc:h-[510px]"
+                )}
+              >
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1279px) 50vw, 33vw"
+                />
+                {/* 그라데이션 & 텍스트 */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
+                <div
+                  className={cn(
+                    "absolute left-4 bottom-4 right-4 text-white",
+                    "pc:left-6 pc:bottom-6 pc:right-6"
+                  )}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className={cn("text-lg font-semibold", "pc:text-2xl")}>
+                      {item.name}
+                    </div>
+                    <div className={cn("w-[30px]", "pc:w-[40px]")}>
+                      <svg
+                        width="31"
+                        height="7"
+                        viewBox="0 0 31 7"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-full h-auto"
+                      >
+                        <path d="M26.2162 1L30 6H0" stroke="white" />
+                      </svg>
+                    </div>
                   </div>
+                  <p
+                    className={cn(
+                      "text-sm opacity-90 mt-1 whitespace-pre-line",
+                      "pc:text-lg"
+                    )}
+                  >
+                    {item.description}
+                  </p>
                 </div>
-                <p className="text-sm opacity-90 mt-1 whitespace-pre-line">
-                  {item.description}
-                </p>
               </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))}
+        </div>
       </div>
       <div className="relative w-full bg-gradient-to-br from-[#4A7BC0] to-[#2D5A9C] py-16 px-5 mt-[40px]">
         {/* 헤더 텍스트 */}

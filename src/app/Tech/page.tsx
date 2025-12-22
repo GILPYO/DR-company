@@ -34,7 +34,7 @@ export default function Page() {
   const handleWrite = async () => {
     if (!user) {
       Swal.fire("로그인이 필요한 서비스입니다.");
-      router.push("/login");
+      router.push("/Login");
       return;
     }
 
@@ -56,12 +56,12 @@ export default function Page() {
       <section className="w-full h-auto flex flex-col justify-center items-center mb-[20px]">
         <div className="relative w-full h-[200px] md:h-[250px] flex items-center justify-center">
           <Image
-            src={"/techBanner.png"}
+            src={"/TechNowPc.jpg"}
             alt="Products"
             fill
             className="object-cover"
           />
-          <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-[24px] md:text-[30px] font-[600]">
+          <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-[24px] md:text-[30px] font-[600] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
             기술현황
           </p>
         </div>
@@ -86,12 +86,12 @@ export default function Page() {
     <section className="w-full h-auto flex flex-col justify-center items-center mb-[20px]">
       <div className="relative w-full h-[200px] md:h-[250px] flex items-center justify-center">
         <Image
-          src={"/techBanner.png"}
+          src={"/TechNowPc.jpg"}
           alt="Products"
           fill
           className="object-cover"
         />
-        <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-[24px] md:text-[30px] font-[600]">
+        <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-[24px] md:text-[30px] font-[600] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
           기술현황
         </p>
       </div>
@@ -105,7 +105,7 @@ export default function Page() {
       </div>
 
       {/* 🔥 총 게시물 수와 글쓰기 버튼 */}
-      <div className="w-full flex justify-between items-center px-[20px] mt-[20px]">
+      <div className="w-full flex justify-between items-center px-[20px] mt-[20px] max-w-[1280px]">
         <p className="text-sm text-gray-600">
           총 {boardsData?.count || 0}개의 게시물
         </p>
@@ -117,7 +117,7 @@ export default function Page() {
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md overflow-hidden w-full px-[12px] mt-[15px]">
+      <div className="bg-white rounded-lg shadow-md overflow-hidden w-full px-[12px] mt-[15px] max-w-[1280px]">
         <table className="w-full">
           <thead className="w-full">
             <tr className="bg-[#2565ae] text-white w-full">

@@ -24,7 +24,7 @@ export function CompanyHistory() {
   ];
 
   return (
-    <div className="w-full max-w-[768px] mx-auto px-[20px] py-[40px]">
+    <div className="w-full mx-auto px-[20px] py-[40px]">
       {/* 로고 섹션 */}
       <div className="flex justify-center mb-[60px]">
         <div className="relative">

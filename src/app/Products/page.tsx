@@ -67,9 +67,9 @@ function ProductsContent() {
   return (
     <section className="w-full h-auto flex flex-col justify-center items-center">
       {/* 헤더 이미지 */}
-      <div className="relative w-full h-[200px] md:h-[250px] flex items-center justify-center">
+      <div className="relative w-full h-[200px] md:h-[250px] flex items-center justify-center pc:h-[340px]">
         <Image
-          src={"/Product-page.png"}
+          src={"/ProductPc.jpg"}
           alt="Products"
           fill
           className="object-cover"

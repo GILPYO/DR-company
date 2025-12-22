@@ -91,7 +91,7 @@ function NoticeWriteContent() {
 
       if (!user) {
         Swal.fire("로그인이 필요합니다.");
-        router.push("/login");
+        router.push("/Login");
         return;
       }
 
@@ -196,19 +196,19 @@ function NoticeWriteContent() {
     <section className="w-full h-auto flex flex-col justify-center items-center mb-[20px]">
       <div className="relative w-full h-[200px] md:h-[250px] flex items-center justify-center">
         <Image
-          src={"/CustomerBanner.png"}
+          src={"/CustomerPc.jpg"}
           alt="Customer Service"
           fill
           className="object-cover"
         />
-        <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-[24px] md:text-[30px] font-[600]">
+        <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-[24px] md:text-[30px] font-[600] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
           {isEdit ? "공지사항 수정" : "공지사항 작성"}
         </p>
       </div>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full h-auto flex flex-col items-center justify-center px-[20px] mt-[40px]"
+        className="w-full h-auto flex flex-col items-center justify-center px-[20px] mt-[40px] max-w-[1280px]"
       >
         <input
           type="text"
