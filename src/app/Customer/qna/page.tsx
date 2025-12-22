@@ -141,7 +141,7 @@ export default function QnaPage() {
                 </td>
               </tr>
             ) : (
-              questionsData?.data.map((item: any, index: number) => {
+              questionsData?.data.map((item, index: number) => {
                 const globalIndex =
                   questionsData.count -
                   ((currentPage - 1) * POSTS_PER_PAGE + index);

@@ -13,7 +13,7 @@ import Swal from "sweetalert2";
 export default function NoticeDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { user, isAdmin } = useAuth();
+  const { isAdmin } = useAuth();
   const id = Number(params.id);
 
   const { data: notice, isLoading, error } = useGetNoticeById(id);
@@ -96,12 +96,12 @@ export default function NoticeDetailPage() {
     <section className="w-full h-auto flex flex-col justify-center items-center mb-[20px]">
       <div className="relative w-full h-[200px] md:h-[250px] flex items-center justify-center">
         <Image
-          src={"/CustomerBanner.png"}
+          src={"/CustomerPc.jpg"}
           alt="Customer Service"
           fill
           className="object-cover"
         />
-        <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-[24px] md:text-[30px] font-[600]">
+        <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-[24px] md:text-[30px] font-[600] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
           공지사항
         </p>
       </div>

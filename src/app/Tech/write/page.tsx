@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import useCreateBoard from "@/app/hooks/Board/useCreateBoard";
 import useUpdateBoard from "@/app/hooks/Board/useEditBoard";
 import { NewBoardPost } from "@/app/service/board/CreateBoard";
+import { BoardPost } from "@/app/service/board/GetBoard";
 import { supabase } from "@/app/lib/supabaseClient";
 import { Suspense } from "react";
 
@@ -20,7 +21,7 @@ type BoardData = {
 function TechWriteContent() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
-  const [editData, setEditData] = useState<any>(null);
+  const [editData, setEditData] = useState<BoardPost | null>(null);
   const [isLoadingEdit, setIsLoadingEdit] = useState(false);
 
   const searchParams = useSearchParams();
@@ -96,7 +97,7 @@ function TechWriteContent() {
 
         for (const file of fileArray) {
           const fileName = `board-img/${Date.now()}-${file.name}`;
-          const { data, error } = await supabase.storage
+          const { error } = await supabase.storage
             .from("manager-bucket")
             .upload(fileName, file);
 

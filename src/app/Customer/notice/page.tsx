@@ -143,7 +143,7 @@ export default function NoticePage() {
                 </td>
               </tr>
             ) : (
-              noticesData?.data.map((item: any, index: number) => {
+              noticesData?.data.map((item, index: number) => {
                 const globalIndex =
                   noticesData.count -
                   ((currentPage - 1) * POSTS_PER_PAGE + index);

@@ -6,11 +6,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/app/lib/supabaseClient";
-import { useAuth } from "@/app/hooks/Auth/useAuth";
 import {
   useCreateQuestion,
   useUpdateQuestion,
 } from "@/app/hooks/Customer/useQuestion";
+import { QuestionPost } from "@/app/service/Customer/QuestionService";
 import Swal from "sweetalert2";
 
 type FormData = {
@@ -22,7 +22,7 @@ type FormData = {
 function QnaWriteContent() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
-  const [editData, setEditData] = useState<any>(null);
+  const [editData, setEditData] = useState<QuestionPost | null>(null);
   const [isLoadingEdit, setIsLoadingEdit] = useState(false);
 
   const searchParams = useSearchParams();
@@ -31,7 +31,6 @@ function QnaWriteContent() {
 
   const { register, handleSubmit, setValue, reset } = useForm<FormData>();
   const router = useRouter();
-  const { user } = useAuth();
 
   const { mutate: createQuestion, isPending: isCreatingQuestion } =
     useCreateQuestion();
@@ -125,7 +124,7 @@ function QnaWriteContent() {
 
         for (const file of fileArray) {
           const fileName = `qna-img/${Date.now()}-${file.name}`;
-          const { data, error } = await supabase.storage
+          const { error } = await supabase.storage
             .from("manager-bucket")
             .upload(fileName, file);
 

@@ -5,11 +5,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/app/lib/supabaseClient";
-import { useAuth } from "@/app/hooks/Auth/useAuth";
 import {
   useCreateNotice,
   useUpdateNotice,
 } from "@/app/hooks/Customer/useNotice";
+import { NoticePost } from "@/app/service/Customer/NoticeService";
 import Swal from "sweetalert2";
 
 type FormData = {
@@ -21,7 +21,7 @@ type FormData = {
 function NoticeWriteContent() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
-  const [editData, setEditData] = useState<any>(null);
+  const [editData, setEditData] = useState<NoticePost | null>(null);
   const [isLoadingEdit, setIsLoadingEdit] = useState(false);
 
   const searchParams = useSearchParams();
@@ -30,7 +30,6 @@ function NoticeWriteContent() {
 
   const { register, handleSubmit, setValue, reset } = useForm<FormData>();
   const router = useRouter();
-  const { user, isAdmin } = useAuth();
 
   const { mutate: createNotice, isPending: isCreatingNotice } =
     useCreateNotice();
@@ -119,7 +118,7 @@ function NoticeWriteContent() {
 
         for (const file of fileArray) {
           const fileName = `notice-img/${Date.now()}-${file.name}`;
-          const { data, error } = await supabase.storage
+          const { error } = await supabase.storage
             .from("manager-bucket")
             .upload(fileName, file);
 
