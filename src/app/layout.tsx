@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="kr">
       <QueryProvider>
         <body
-          className={`${pretendard.variable} ${pretendard.className} flex flex-col items-center justify-center max-w-[768px] mx-auto`}
+          className={`${pretendard.variable} ${pretendard.className} flex flex-col items-center justify-center w-full mx-auto`}
         >
           <Gnb />
           {children}

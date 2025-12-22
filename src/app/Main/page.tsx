@@ -2,16 +2,15 @@
 import { HOME_CONTENT_LIST } from "@/constants/constant";
 import Image from "next/image";
 import Link from "next/link";
-import { Footer } from "../components/Footer/Footer";
 import { useRouter } from "next/navigation";
 
 export default function Main() {
   const router = useRouter();
   return (
     <section className="w-full min-h-[calc(100vh-120px)] flex flex-col items-center justify-start">
-      <div className="relative w-full h-[552px]">
+      <div className="relative w-full h-[552px] pc:h-[900px]">
         <Image
-          src="/HomeImgM.png"
+          src="/Homeimage.jpg"
           alt="홈 메인 이미지"
           fill
           className="object-cover"
@@ -20,12 +19,15 @@ export default function Main() {
         />
 
         {/* 텍스트 오버레이 */}
-        <div className="absolute left-[20px] top-1/2 -translate-y-1/2 ">
+        <div className="absolute left-[20px] top-1/2 -translate-y-1/2 pc:left-[200px]">
           <div>
             <p className="text-white text-[40px] leading-tight drop-shadow">
               정확한 설계,
+              <span className="text-white text-[40px] leading-tight drop-shadow hidden pc:inline">
+                믿을 수 있는 연도
+              </span>
             </p>
-            <p className="text-white text-[40px] leading-tight drop-shadow">
+            <p className="text-white text-[40px] leading-tight drop-shadow pc:hidden">
               믿을 수 있는 연도
             </p>
             <p className="text-white text-[40px] font-semibold drop-shadow">
