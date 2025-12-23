@@ -20,6 +20,7 @@ type FormData = {
 
 function NoticeWriteContent() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [uploadedUrls, setUploadedUrls] = useState<string[]>([]); // 업로드된 URL 상태 관리
   const [currentUser, setCurrentUser] = useState<string | null>(null);
   const [editData, setEditData] = useState<NoticePost | null>(null);
   const [isLoadingEdit, setIsLoadingEdit] = useState(false);
@@ -73,10 +74,12 @@ function NoticeWriteContent() {
   // 폼에 데이터 채우기
   useEffect(() => {
     if (isEdit && editData) {
+      const editImgUrl = editData.img_url || [];
+      setUploadedUrls(editImgUrl);
       reset({
         title: editData.title,
         content: editData.content,
-        img_url: editData.img_url || [],
+        img_url: editImgUrl,
       });
     }
   }, [isEdit, editData, reset]);
@@ -111,16 +114,26 @@ function NoticeWriteContent() {
     const files = e.target.files;
     if (files) {
       const fileArray = Array.from(files);
-      setSelectedFiles(fileArray);
+      // 기존 선택된 파일과 새 파일 합치기
+      setSelectedFiles((prev) => [...prev, ...fileArray]);
 
       try {
-        const uploadedUrls: string[] = [];
+        const newUploadedUrls: string[] = [];
 
         for (const file of fileArray) {
-          const fileName = `notice-img/${Date.now()}-${file.name}`;
+          // 파일명에서 확장자 추출
+          const fileExtension = file.name.split(".").pop() || "";
+          // 안전한 파일명 생성 (한글 및 특수문자 제거)
+          const safeFileName = `${Date.now()}-${Math.random()
+            .toString(36)
+            .substring(2, 15)}.${fileExtension}`;
+          const fileName = `notice-img/${safeFileName}`;
+
           const { error } = await supabase.storage
             .from("manager-bucket")
-            .upload(fileName, file);
+            .upload(fileName, file, {
+              contentType: file.type,
+            });
 
           if (error) throw error;
 
@@ -128,13 +141,31 @@ function NoticeWriteContent() {
             data: { publicUrl },
           } = supabase.storage.from("manager-bucket").getPublicUrl(fileName);
 
-          uploadedUrls.push(publicUrl);
+          // 원본 파일명을 URL 파라미터로 추가 (다운로드 시 사용)
+          const urlWithFileName = `${publicUrl}?filename=${encodeURIComponent(
+            file.name
+          )}`;
+          newUploadedUrls.push(urlWithFileName);
         }
 
-        setValue("img_url", uploadedUrls);
+        // 상태와 폼 모두 업데이트
+        setUploadedUrls((prev) => {
+          const updatedUrls = [...prev, ...newUploadedUrls];
+          setValue("img_url", updatedUrls);
+          return updatedUrls;
+        });
       } catch (error) {
         console.error("파일 업로드 실패:", error);
         Swal.fire("파일 업로드에 실패했습니다.");
+        // 에러 발생 시 선택된 파일 목록도 롤백
+        setSelectedFiles((prev) =>
+          prev.slice(0, prev.length - fileArray.length)
+        );
+      }
+
+      // 파일 입력 초기화 (같은 파일을 다시 선택할 수 있도록)
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
       }
     }
   };
@@ -142,18 +173,22 @@ function NoticeWriteContent() {
   const onSubmit = (data: FormData) => {
     if (!currentUser) return;
 
+    // 상태에서 직접 가져오기 (가장 확실한 방법)
+    const currentImgUrl =
+      uploadedUrls.length > 0 ? uploadedUrls : data.img_url || [];
+
     if (isEdit) {
       updateNotice({
         id: Number(editId),
         title: data.title,
         content: data.content,
-        img_url: data.img_url || [],
+        img_url: currentImgUrl,
       });
     } else {
       createNotice({
         title: data.title,
         content: data.content,
-        img_url: data.img_url || [],
+        img_url: currentImgUrl,
       });
     }
   };
@@ -236,7 +271,7 @@ function NoticeWriteContent() {
             multiple
             type="file"
             className="hidden"
-            accept="image/*"
+            accept="image/*,.pdf,application/pdf"
           />
           <div className="w-full px-2 py-2 border h-[50px] flex items-center bg-white">
             <span

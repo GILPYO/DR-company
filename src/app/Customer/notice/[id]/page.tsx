@@ -10,6 +10,58 @@ import {
 } from "@/app/hooks/Customer/useNotice";
 import Swal from "sweetalert2";
 
+// 파일 타입 확인 헬퍼 함수
+const getFileType = (url: string): "image" | "pdf" | "other" => {
+  if (!url || typeof url !== "string") return "other";
+
+  // URL 파라미터 제거 (예: ?filename=...)
+  const urlWithoutParams = url.split("?")[0];
+  const lowerUrl = urlWithoutParams.toLowerCase();
+
+  // 확장자 추출
+  const extension = lowerUrl.split(".").pop();
+
+  if (
+    ["jpg", "jpeg", "png", "gif", "webp", "svg", "bmp"].includes(
+      extension || ""
+    )
+  ) {
+    return "image";
+  }
+  if (extension === "pdf") {
+    return "pdf";
+  }
+  return "other";
+};
+
+// 파일명 추출 헬퍼 함수
+const getFileName = (url: string): string => {
+  try {
+    // URL 파라미터에서 원본 파일명 추출 시도
+    const urlObj = new URL(url);
+    const filenameParam = urlObj.searchParams.get("filename");
+    if (filenameParam) {
+      return decodeURIComponent(filenameParam);
+    }
+
+    // 파라미터가 없으면 URL에서 파일명 추출
+    const urlParts = url.split("/");
+    const fileName = urlParts[urlParts.length - 1].split("?")[0];
+    return decodeURIComponent(fileName);
+  } catch {
+    // URL 파싱 실패 시 간단한 방법으로 시도
+    try {
+      const urlMatch = url.match(/filename=([^&]+)/);
+      if (urlMatch) {
+        return decodeURIComponent(urlMatch[1]);
+      }
+    } catch {
+      // 최후의 수단
+    }
+    return "파일";
+  }
+};
+
 export default function NoticeDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -114,7 +166,86 @@ export default function NoticeDetailPage() {
             <h1 className="text-lg sm:text-xl font-semibold break-words mb-2 sm:mb-0 sm:mr-4 flex-1 min-w-0">
               {notice.title}
             </h1>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
+              {/* 첨부 파일 다운로드 버튼 (PDF 등) */}
+              {notice.img_url &&
+                Array.isArray(notice.img_url) &&
+                notice.img_url
+                  .filter(
+                    (url) =>
+                      url &&
+                      typeof url === "string" &&
+                      url.startsWith("http") &&
+                      getFileType(url) !== "image"
+                  )
+                  .map((fileUrl, index) => {
+                    const fileName = getFileName(fileUrl);
+                    const fileType = getFileType(fileUrl);
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          // URL 파라미터 제거한 실제 파일 URL
+                          const actualFileUrl = fileUrl.split("?")[0];
+                          const link = document.createElement("a");
+                          link.href = actualFileUrl;
+                          link.download = fileName;
+                          link.target = "_blank";
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                        }}
+                        className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-gray-200"
+                        title={fileName}
+                      >
+                        {fileType === "pdf" ? (
+                          <svg
+                            className="w-4 h-4 text-red-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                            />
+                          </svg>
+                        ) : (
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                            />
+                          </svg>
+                        )}
+                        <span className="text-xs max-w-[100px] truncate">
+                          {fileName}
+                        </span>
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                          />
+                        </svg>
+                      </button>
+                    );
+                  })}
               <p className="text-gray-600 text-sm whitespace-nowrap">
                 {formatToKoreanDate(notice.created_at)}
               </p>
@@ -123,47 +254,42 @@ export default function NoticeDetailPage() {
 
           {/* 게시글 내용 */}
           <div className="w-full mt-6">
-            {/* 🔥 Tech 게시판과 동일한 이미지 처리 */}
+            {/* 이미지만 본문에 표시 */}
             {notice.img_url &&
               Array.isArray(notice.img_url) &&
-              notice.img_url.length > 0 && (
+              notice.img_url.filter(
+                (url) =>
+                  url &&
+                  typeof url === "string" &&
+                  url.startsWith("http") &&
+                  getFileType(url) === "image"
+              ).length > 0 && (
                 <div className="mb-6 space-y-4">
-                  {notice.img_url.map((imageUrl, index) => {
-                    if (
-                      !imageUrl ||
-                      typeof imageUrl !== "string" ||
-                      imageUrl.trim() === ""
-                    ) {
-                      return null;
-                    }
-
-                    if (!imageUrl.startsWith("http")) {
+                  {notice.img_url
+                    .filter(
+                      (url) =>
+                        url &&
+                        typeof url === "string" &&
+                        url.startsWith("http") &&
+                        getFileType(url) === "image"
+                    )
+                    .map((imageUrl, index) => {
+                      // URL 파라미터 제거한 실제 파일 URL
+                      const actualFileUrl = imageUrl.split("?")[0];
                       return (
-                        <div
-                          key={index}
-                          className="p-4 bg-gray-100 rounded border"
-                        >
-                          <p className="text-gray-600 text-sm break-all">
-                            첨부 파일: {imageUrl}
-                          </p>
+                        <div key={index} className="relative w-full">
+                          <Image
+                            src={actualFileUrl}
+                            alt={`Notice Image ${index + 1}`}
+                            width={0}
+                            height={0}
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                            className="w-full h-auto max-h-[400px] sm:max-h-[500px] object-contain rounded-lg shadow-sm"
+                            style={{ width: "100%", height: "auto" }}
+                          />
                         </div>
                       );
-                    }
-
-                    return (
-                      <div key={index} className="relative w-full">
-                        <Image
-                          src={imageUrl}
-                          alt={`Notice Image ${index + 1}`}
-                          width={0}
-                          height={0}
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
-                          className="w-full h-auto max-h-[400px] sm:max-h-[500px] object-contain rounded-lg shadow-sm"
-                          style={{ width: "100%", height: "auto" }}
-                        />
-                      </div>
-                    );
-                  })}
+                    })}
                 </div>
               )}
 
