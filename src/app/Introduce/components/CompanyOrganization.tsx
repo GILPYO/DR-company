@@ -44,7 +44,7 @@ export function CompanyOrganization() {
         </div>
 
         {/* 각 부서들 */}
-        <div className="flex justify-center gap-4 mt-8 flex-wrap">
+        <div className="flex justify-center gap-5 mt-1 flex-wrap">
           {[
             "연구개발\n전담부서",
             "영업부",
