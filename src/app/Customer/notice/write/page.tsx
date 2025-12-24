@@ -114,13 +114,49 @@ function NoticeWriteContent() {
     const files = e.target.files;
     if (files) {
       const fileArray = Array.from(files);
+
+      // 파일 유효성 검사
+      const validFiles: File[] = [];
+      const invalidFiles: string[] = [];
+
+      for (const file of fileArray) {
+        const isImage = file.type.startsWith("image/");
+        const isPdf =
+          file.type === "application/pdf" ||
+          file.name.toLowerCase().endsWith(".pdf");
+
+        if (isImage || isPdf) {
+          validFiles.push(file);
+        } else {
+          invalidFiles.push(file.name);
+        }
+      }
+
+      if (invalidFiles.length > 0) {
+        Swal.fire({
+          icon: "warning",
+          title: "지원하지 않는 파일 형식",
+          text: `${invalidFiles.join(
+            ", "
+          )} 파일은 이미지 또는 PDF 파일만 업로드 가능합니다.`,
+        });
+      }
+
+      if (validFiles.length === 0) {
+        // 파일 입력 초기화
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+        return;
+      }
+
       // 기존 선택된 파일과 새 파일 합치기
-      setSelectedFiles((prev) => [...prev, ...fileArray]);
+      setSelectedFiles((prev) => [...prev, ...validFiles]);
 
       try {
         const newUploadedUrls: string[] = [];
 
-        for (const file of fileArray) {
+        for (const file of validFiles) {
           // 파일명에서 확장자 추출
           const fileExtension = file.name.split(".").pop() || "";
           // 안전한 파일명 생성 (한글 및 특수문자 제거)
@@ -129,13 +165,27 @@ function NoticeWriteContent() {
             .substring(2, 15)}.${fileExtension}`;
           const fileName = `notice-img/${safeFileName}`;
 
+          // PDF 파일의 경우 명시적으로 contentType 설정
+          const isPdf =
+            file.type === "application/pdf" ||
+            file.name.toLowerCase().endsWith(".pdf");
+          const contentType = isPdf
+            ? "application/pdf"
+            : file.type || "application/octet-stream";
+
+          console.log(`파일 업로드 시작: ${file.name}, 타입: ${contentType}`);
+
           const { error } = await supabase.storage
             .from("manager-bucket")
             .upload(fileName, file, {
-              contentType: file.type,
+              contentType: contentType,
+              upsert: false,
             });
 
-          if (error) throw error;
+          if (error) {
+            console.error(`파일 업로드 에러 (${file.name}):`, error);
+            throw new Error(`${file.name} 업로드 실패: ${error.message}`);
+          }
 
           const {
             data: { publicUrl },
@@ -146,6 +196,8 @@ function NoticeWriteContent() {
             file.name
           )}`;
           newUploadedUrls.push(urlWithFileName);
+
+          console.log(`파일 업로드 성공: ${file.name} -> ${publicUrl}`);
         }
 
         // 상태와 폼 모두 업데이트
@@ -154,12 +206,28 @@ function NoticeWriteContent() {
           setValue("img_url", updatedUrls);
           return updatedUrls;
         });
-      } catch (error) {
+
+        Swal.fire({
+          icon: "success",
+          title: "업로드 완료",
+          text: `${validFiles.length}개 파일이 업로드되었습니다.`,
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      } catch (error: unknown) {
         console.error("파일 업로드 실패:", error);
-        Swal.fire("파일 업로드에 실패했습니다.");
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "파일 업로드에 실패했습니다. 다시 시도해주세요.";
+        Swal.fire({
+          icon: "error",
+          title: "파일 업로드 실패",
+          text: errorMessage,
+        });
         // 에러 발생 시 선택된 파일 목록도 롤백
         setSelectedFiles((prev) =>
-          prev.slice(0, prev.length - fileArray.length)
+          prev.slice(0, prev.length - validFiles.length)
         );
       }
 
@@ -257,33 +325,87 @@ function NoticeWriteContent() {
           {...register("content", { required: "내용을 입력해주세요" })}
         />
 
-        <div className="w-full flex items-center justify-center mt-2">
-          <button
-            onClick={handleFileButtonClick}
-            type="button"
-            className="min-w-[100px] text-center px-2 py-3 bg-[#f5f5f5] border hover:bg-gray-200 transition-colors"
-          >
-            파일 첨부
-          </button>
-          <input
-            onChange={handleFileChange}
-            ref={fileInputRef}
-            multiple
-            type="file"
-            className="hidden"
-            accept="image/*,.pdf,application/pdf"
-          />
-          <div className="w-full px-2 py-2 border h-[50px] flex items-center bg-white">
-            <span
-              className={
-                selectedFiles.length > 0 ? "text-gray-900" : "text-gray-500"
-              }
+        <div className="w-full flex flex-col gap-2 mt-2">
+          <div className="w-full flex items-center justify-center">
+            <button
+              onClick={handleFileButtonClick}
+              type="button"
+              className="min-w-[100px] text-center px-2 py-3 bg-[#f5f5f5] border hover:bg-gray-200 transition-colors"
             >
-              {selectedFiles.length > 0
-                ? `${selectedFiles.length}개 파일 선택됨`
-                : "선택된 파일이 없습니다"}
-            </span>
+              파일 첨부
+            </button>
+            <input
+              onChange={handleFileChange}
+              ref={fileInputRef}
+              multiple
+              type="file"
+              className="hidden"
+              accept="image/*,.pdf,application/pdf"
+            />
+            <div className="w-full px-2 py-2 border h-[50px] flex items-center bg-white">
+              <span
+                className={
+                  selectedFiles.length > 0 ? "text-gray-900" : "text-gray-500"
+                }
+              >
+                {selectedFiles.length > 0
+                  ? `${selectedFiles.length}개 파일 선택됨`
+                  : "선택된 파일이 없습니다 (이미지 및 PDF 파일 가능)"}
+              </span>
+            </div>
           </div>
+          {/* 선택된 파일 목록 표시 */}
+          {selectedFiles.length > 0 && (
+            <div className="w-full px-2 py-2 border bg-gray-50 rounded">
+              <div className="flex flex-col gap-2">
+                {selectedFiles.map((file, index) => {
+                  const isPdf =
+                    file.type === "application/pdf" ||
+                    file.name.toLowerCase().endsWith(".pdf");
+                  return (
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 text-sm text-gray-700"
+                    >
+                      {isPdf ? (
+                        <svg
+                          className="w-4 h-4 text-red-600 flex-shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          className="w-4 h-4 text-blue-600 flex-shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                      )}
+                      <span className="truncate flex-1">{file.name}</span>
+                      <span className="text-xs text-gray-500">
+                        ({(file.size / 1024).toFixed(1)} KB)
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="w-full flex gap-4 mt-6">

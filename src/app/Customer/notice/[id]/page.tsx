@@ -160,27 +160,28 @@ export default function NoticeDetailPage() {
 
       <div className="w-full max-w-4xl mx-auto px-[20px] mt-[40px]">
         {/* 게시글 컨테이너 */}
-        <div className="w-full min-h-[570px] border border-[#e3e3e3] shadow-lg flex flex-col items-center justify-start px-[20px] py-[20px]">
-          {/* 게시글 헤더 */}
-          <div className="w-full min-h-[48px] flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-[#e3e3e3] pb-4 sm:pb-0">
-            <h1 className="text-lg sm:text-xl font-semibold break-words mb-2 sm:mb-0 sm:mr-4 flex-1 min-w-0">
-              {notice.title}
-            </h1>
-            <div className="flex items-center gap-3">
-              {/* 첨부 파일 다운로드 버튼 (PDF 등) */}
-              {notice.img_url &&
-                Array.isArray(notice.img_url) &&
-                notice.img_url
+        <div className="w-full min-h-[570px] border border-[#e3e3e3] shadow-lg flex flex-col items-center justify-start px-[20px] py-[20px] relative">
+          {/* PDF 다운로드 영역 - 오른쪽 상단 */}
+          {notice.img_url &&
+            Array.isArray(notice.img_url) &&
+            notice.img_url.filter(
+              (url) =>
+                url &&
+                typeof url === "string" &&
+                url.startsWith("http") &&
+                getFileType(url) === "pdf"
+            ).length > 0 && (
+              <div className="absolute top-[20px] right-[20px] flex flex-col gap-2 z-10">
+                {notice.img_url
                   .filter(
                     (url) =>
                       url &&
                       typeof url === "string" &&
                       url.startsWith("http") &&
-                      getFileType(url) !== "image"
+                      getFileType(url) === "pdf"
                   )
                   .map((fileUrl, index) => {
                     const fileName = getFileName(fileUrl);
-                    const fileType = getFileType(fileUrl);
                     return (
                       <button
                         key={index}
@@ -195,43 +196,27 @@ export default function NoticeDetailPage() {
                           link.click();
                           document.body.removeChild(link);
                         }}
-                        className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-gray-200"
+                        className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-gray-300 shadow-sm hover:shadow-md"
                         title={fileName}
                       >
-                        {fileType === "pdf" ? (
-                          <svg
-                            className="w-4 h-4 text-red-600"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                            />
-                          </svg>
-                        ) : (
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                            />
-                          </svg>
-                        )}
-                        <span className="text-xs max-w-[100px] truncate">
+                        <svg
+                          className="w-5 h-5 text-red-600 flex-shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                          />
+                        </svg>
+                        <span className="max-w-[150px] md:max-w-[200px] truncate">
                           {fileName}
                         </span>
                         <svg
-                          className="w-4 h-4"
+                          className="w-4 h-4 flex-shrink-0"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -246,6 +231,15 @@ export default function NoticeDetailPage() {
                       </button>
                     );
                   })}
+              </div>
+            )}
+
+          {/* 게시글 헤더 */}
+          <div className="w-full min-h-[48px] flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-[#e3e3e3] pb-4 sm:pb-0">
+            <h1 className="text-lg sm:text-xl font-semibold break-words mb-2 sm:mb-0 sm:mr-4 flex-1 min-w-0 pr-[180px] sm:pr-0">
+              {notice.title}
+            </h1>
+            <div className="flex items-center gap-3">
               <p className="text-gray-600 text-sm whitespace-nowrap">
                 {formatToKoreanDate(notice.created_at)}
               </p>
